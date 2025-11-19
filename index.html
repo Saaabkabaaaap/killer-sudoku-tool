@@ -1,1745 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="icon" type="image/svg+xml" href="DARKfavicon.svg">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧩 Killer Sudoku Cage Combination Tool</title>
+    <title>Killer v6.1 Fixed</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #050508 0%, #0a0a0f 50%, #0f0f1a 100%);
-            color: #f8fafc;
-            min-height: 100vh;
-            line-height: 1.4;
-        }
-
-        .header {
-            text-align: center;
-            padding: 15px;
-            border-bottom: 1px solid rgba(100, 255, 218, 0.15);
-            background: rgba(5, 5, 8, 0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            color: #64ffda;
-            text-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-
-        .header p {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .main-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 15px;
-            padding: 15px;
-            min-height: calc(100vh - 100px);
-        }
-
-        .results-column {
-            background: rgba(15, 15, 26, 0.4);
-            border: 1px solid rgba(100, 255, 218, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .controls-column {
-            background: rgba(15, 15, 26, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(100, 255, 218, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .control-group {
-            margin-bottom: 18px;
-        }
-
-        .control-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .control-label {
-            display: block;
-            font-weight: 600;
-            color: #64ffda;
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        .input-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .single-input-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(100, 255, 218, 0.05);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 8px;
-            padding: 8px 12px;
-        }
-
-        .range-input-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(139, 92, 246, 0.05);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 8px;
-            padding: 8px 12px;
-        }
-
-        .single-input-group.hidden,
-        .range-input-group.hidden {
-            display: none;
-        }
-
-        input[type="number"] {
-            background: rgba(248, 250, 252, 0.05);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 6px;
-            padding: 6px 10px;
-            color: #f8fafc;
-            font-size: 13px;
-            width: 70px;
-            transition: all 0.2s ease;
-        }
-
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #64ffda;
-            box-shadow: 0 0 8px rgba(100, 255, 218, 0.3);
-            background: rgba(248, 250, 252, 0.08);
-        }
-
-        input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: #64ffda;
-        }
-
-        .button {
-            background: linear-gradient(135deg, #64ffda, #00bfa5);
-            color: #0a0a0f;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 12px;
-        }
-
-        .button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(100, 255, 218, 0.4);
-        }
-
-        .button-secondary {
-            background: rgba(139, 92, 246, 0.8);
-            color: #f8fafc;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-
-        .button-secondary:hover {
-            background: rgba(139, 92, 246, 1);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        .button-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-        .button-small {
-            padding: 6px 12px;
-            font-size: 11px;
-        }
-
-        .generate-button {
-            display: block;
-            margin: 20px auto;
-            padding: 12px 30px;
-            font-size: 1rem;
-            background: linear-gradient(135deg, #64ffda, #00bfa5);
-            color: #0a0a0f;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            width: 100%;
-        }
-
-        .generate-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(100, 255, 218, 0.5);
-        }
-
-        .groups-container {
-            border: 1px solid rgba(100, 255, 218, 0.15);
-            border-radius: 8px;
-            padding: 12px;
-            background: rgba(100, 255, 218, 0.03);
-        }
-
-        .group {
-            background: rgba(248, 250, 252, 0.03);
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(248, 250, 252, 0.08);
-        }
-
-        .group-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .group-header h4 {
-            color: #8b5cf6;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .digits-container {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-
-        .digit-button {
-            width: 28px;
-            height: 28px;
-            border: 1px solid rgba(100, 255, 218, 0.25);
-            background: rgba(100, 255, 218, 0.08);
-            color: #64ffda;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 600;
-            font-size: 12px;
-            position: relative;
-        }
-
-        .digit-button.selected {
-            background: #64ffda;
-            color: #0a0a0f;
-        }
-
-        .digit-button:hover {
-            background: rgba(100, 255, 218, 0.15);
-        }
-
-        .digit-button.auto-updated {
-            animation: enhanced-highlight 2.5s ease-out;
-        }
-
-        @keyframes enhanced-highlight {
-            0% { 
-                transform: scale(1.15);
-                box-shadow: 0 0 20px rgba(100, 255, 218, 0.8);
-                background: rgba(100, 255, 218, 0.4);
-                border-color: #64ffda;
-            }
-            25% {
-                transform: scale(1.1);
-                box-shadow: 0 0 15px rgba(100, 255, 218, 0.6);
-                background: rgba(100, 255, 218, 0.3);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 10px rgba(100, 255, 218, 0.4);
-                background: rgba(100, 255, 218, 0.2);
-            }
-            100% { 
-                transform: scale(1);
-                box-shadow: none;
-                background: rgba(100, 255, 218, 0.08);
-            }
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-        }
-
-        .advanced-filtering {
-            background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.15);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .digit-grid {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .overview-bar {
-            background: rgba(10, 10, 15, 0.9);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(100, 255, 218, 0.15);
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .overview-content {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .overview-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .overview-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
-
-        .count-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .count-badge {
-            background: #64ffda;
-            color: #0a0a0f;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 11px;
-        }
-
-        .count-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(100, 255, 218, 0.4);
-        }
-
-        .total-badge {
-            background: #8b5cf6;
-            color: #f8fafc;
-            font-size: 13px;
-            padding: 4px 12px;
-        }
-
-        /* Statistics Dashboard */
-        .statistics-dashboard {
-            background: rgba(15, 15, 26, 0.7);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-        }
-
-        .stats-header {
-            color: #8b5cf6;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stats-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            font-size: 11px;
-        }
-
-        .digit-frequency {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            gap: 3px;
-            margin-bottom: 8px;
-        }
-
-        .freq-bar {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 3px;
-            text-align: center;
-            padding: 4px 2px;
-            color: #8b5cf6;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .freq-bar.most-common {
-            background: rgba(100, 255, 218, 0.2);
-            border-color: rgba(100, 255, 218, 0.4);
-            color: #64ffda;
-            animation: pulse-glow 2s infinite;
-        }
-
-        .freq-bar.least-common {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 5px rgba(100, 255, 218, 0.3); }
-            50% { box-shadow: 0 0 15px rgba(100, 255, 218, 0.6); }
-        }
-
-        .freq-number {
-            display: block;
-            font-size: 9px;
-            margin-bottom: 2px;
-        }
-
-        .freq-count {
-            display: block;
-            font-size: 8px;
-            opacity: 0.8;
-        }
-
-        .sum-frequency {
-            max-height: 60px;
-            overflow-y: auto;
-        }
-
-        .sum-freq-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2px 4px;
-            margin: 1px 0;
-            background: rgba(100, 255, 218, 0.08);
-            border-radius: 3px;
-            font-size: 10px;
-        }
-
-        .sum-freq-item.top-sum {
-            background: rgba(100, 255, 218, 0.2);
-            color: #64ffda;
-            font-weight: 600;
-        }
-
-        .cage-size-section {
-            margin-bottom: 20px;
-        }
-
-        .cage-size-header {
-            color: #64ffda;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid rgba(100, 255, 218, 0.25);
-        }
-
-        .sum-section {
-            margin-bottom: 15px;
-        }
-
-        .sum-header {
-            color: #8b5cf6;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .sum-remove-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sum-header:hover .sum-remove-btn {
-            opacity: 1;
-        }
-
-        .sum-remove-btn:hover {
-            background: #dc2626;
-            transform: scale(1.1);
-        }
-
-        .combinations {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 8px;
-        }
-
-        .combination {
-            background: rgba(248, 250, 252, 0.04);
-            border: 1px solid rgba(248, 250, 252, 0.08);
-            border-radius: 6px;
-            padding: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .combination:hover {
-            background: rgba(248, 250, 252, 0.08);
-            border-color: rgba(100, 255, 218, 0.25);
-        }
-
-        .combination.grayed-out {
-            opacity: 0.35;
-            background: rgba(148, 163, 184, 0.06);
-            border-color: rgba(148, 163, 184, 0.15);
-        }
-
-        .combination-digits {
-            font-weight: 600;
-            color: #64ffda;
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            font-size: 14px;
-        }
-
-        .combination.grayed-out .combination-digits {
-            color: #64748b;
-        }
-
-        .clickable-digit {
-            background: rgba(100, 255, 218, 0.08);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 3px;
-            padding: 1px 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .clickable-digit:hover {
-            background: rgba(100, 255, 218, 0.15);
-            transform: scale(1.1);
-        }
-
-        .restore-hint {
-            position: absolute;
-            top: 3px;
-            right: 5px;
-            color: #64748b;
-            font-size: 10px;
-            pointer-events: none;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .sum-exclusions {
-            margin-top: 12px;
-        }
-
-        .sum-exclusion-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 4px;
-            margin-top: 8px;
-        }
-
-        .sum-button {
-            padding: 6px;
-            border: 1px solid rgba(239, 68, 68, 0.25);
-            background: rgba(239, 68, 68, 0.08);
-            color: #ef4444;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            font-weight: 600;
-            font-size: 11px;
-        }
-
-        .sum-button.excluded {
-            background: #ef4444;
-            color: white;
-        }
-
-        .sum-button:hover {
-            background: rgba(239, 68, 68, 0.15);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 30px 15px;
-            color: #64748b;
-        }
-
-        .empty-state h3 {
-            color: #64ffda;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        @media (max-width: 1024px) {
-            .main-container {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .results-column {
-                order: 2;
-            }
-            
-            .controls-column {
-                order: 1;
-            }
-
-            .stats-content {
-                grid-template-columns: 1fr;
-            }
-        }
+        :root {
+            --bg-deep: #05050a;
+            --glass-panel: rgba(20, 20, 30, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-c1: #00f2ff; --neon-c1-dim: rgba(0, 242, 255, 0.1);
+            --neon-c2: #ff00ff; --neon-c2-dim: rgba(255, 0, 255, 0.1);
+            --text-main: #e2e8f0; --text-muted: #94a3b8; --danger: #ff2a6d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; user-select: none; }
+        
+        body { 
+            background-color: var(--bg-deep);
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+            color: var(--text-main); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; /* Prevent body scroll, handle in panels */
+        }
+
+        /* --- SCROLLBARS (Made visible and styled) --- */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a10; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; border: 1px solid #000; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* --- TOP BAR --- */
+        .top-bar { 
+            flex: 0 0 50px; /* Fixed height */
+            padding: 0 20px;
+            background: #0a0a12;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 100;
+        }
+        .logo-text {
+            font-weight: 800; font-size: 1.1rem; letter-spacing: 1px;
+            color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        /* --- GRID LAYOUT --- */
+        .main-grid { 
+            flex: 1; /* Take remaining height */
+            display: grid; 
+            height: 100%; /* Fill remaining space */
+            overflow: hidden; 
+            transition: 0.3s ease;
+        }
+        .layout-single { grid-template-columns: 320px 1fr 260px; }
+        .layout-dual { grid-template-columns: 320px 1fr 1fr 220px; }
+
+        .panel { 
+            display: flex; flex-direction: column; 
+            border-right: 1px solid var(--glass-border);
+            background: var(--glass-panel);
+            height: 100%; /* Ensure it fills parent */
+            min-height: 0; /* Flexbox scrolling fix */
+        }
+        
+        .scroll-area { flex: 1; overflow-y: auto; padding: 15px; }
+        .results-panel { background: rgba(0,0,0,0.3); }
+
+        /* --- INPUTS --- */
+        .section { padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; }
+        .h-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+        
+        .input-group { background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border: 1px solid var(--glass-border); }
+        .border-c1 { border-left: 3px solid var(--neon-c1); }
+        .border-c2 { border-left: 3px solid var(--neon-c2); }
+        .row { display: flex; gap: 8px; align-items: center; }
+        .flex-1 { flex: 1; }
+        label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 3px; }
+        input, select { background: #111; border: 1px solid #333; color: #fff; padding: 6px; border-radius: 4px; width: 100%; outline: none; font-size: 0.9rem; }
+        input:focus { border-color: var(--neon-c1); }
+
+        /* --- BUTTONS --- */
+        .btn { width: 100%; padding: 10px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        .btn-primary { background: linear-gradient(135deg, var(--neon-c1), #00b8d4); color: #000; box-shadow: 0 0 15px rgba(0,242,255,0.2); }
+        .btn-primary:hover { box-shadow: 0 0 20px rgba(0,242,255,0.4); }
+        .btn-sec { background: #222; color: #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; border: 1px solid #333; }
+        
+        /* --- TOGGLE --- */
+        .switch { width: 36px; height: 20px; background: #222; border-radius: 10px; position: relative; transition: 0.3s; border: 1px solid #444; margin-right: 10px; }
+        .switch::after { content:''; position: absolute; top:2px; left:2px; width:14px; height:14px; background:#fff; border-radius:50%; transition:0.3s; }
+        input:checked + .switch { background: var(--neon-c2); border-color: var(--neon-c2); }
+        input:checked + .switch::after { transform: translateX(16px); }
+
+        /* --- KEYPADS --- */
+        .side-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 20px; }
+        .key-btn { aspect-ratio: 1; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 6px; font-size: 1.2rem; color: #888; display: grid; place-items: center; cursor: pointer; }
+        
+        /* Mini Strip (Inside results) */
+        .mini-strip { padding: 10px; border-bottom: 1px solid var(--glass-border); background: rgba(10,10,15,0.95); flex: 0 0 auto; }
+        .mini-pad { display: flex; gap: 3px; margin-top: 5px; }
+        .mini-key { flex: 1; height: 30px; background: #151515; border: 1px solid #333; border-radius: 3px; color: #777; display: grid; place-items: center; cursor: pointer; font-size: 0.9rem; }
+        
+        /* States */
+        .in { color: #000 !important; font-weight: bold; box-shadow: 0 0 8px currentColor; }
+        .ex { background: rgba(255, 42, 109, 0.15) !important; color: var(--danger) !important; border-color: var(--danger) !important; }
+        .c1-theme .in { background: var(--neon-c1); border-color: var(--neon-c1); color: #000; }
+        .c2-theme .in { background: var(--neon-c2); border-color: var(--neon-c2); color: #000; }
+        .ghost { opacity: 0.1; pointer-events: none; }
+
+        /* --- SMART GRAPHS (Top 3) --- */
+        .stats-box { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .stat-row { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; height: 16px; }
+        .stat-lbl { width: 15px; text-align: center; font-weight: bold; color: var(--text-muted); }
+        .stat-track { flex: 1; height: 4px; background: #222; border-radius: 2px; overflow: hidden; }
+        .stat-bar { height: 100%; border-radius: 2px; width: 0; transition: width 0.5s ease; }
+        .stat-val { width: 25px; text-align: right; font-family: monospace; color: #888; }
+        
+        /* --- RESULTS --- */
+        .res-group { margin-bottom: 10px; border: 1px solid #333; border-radius: 4px; overflow: hidden; }
+        .res-head { background: #151515; padding: 5px 10px; font-size: 0.8rem; font-weight: bold; border-bottom: 1px solid #222; color: #ddd; }
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1px; background: #333; }
+        .card { background: #0a0a0a; padding: 8px 0; text-align: center; font-family: monospace; font-size: 1.1rem; cursor: pointer; color: #ccc; }
+        .card:hover { background: #222; color: #fff; z-index: 1; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .remover-item { display: flex; justify-content: space-between; padding: 6px; background: #111; border: 1px solid #333; margin-bottom: 4px; font-size: 0.8rem; border-radius: 4px; }
+        .del-x { color: var(--danger); cursor: pointer; font-weight: bold; padding: 0 5px; }
+        
+        /* Sets */
+        .set-row { display: flex; gap: 2px; margin-top: 5px; }
+        .set-d { flex: 1; aspect-ratio: 1; background: #111; border: 1px solid #333; display: grid; place-items: center; cursor: pointer; border-radius: 3px; font-size: 0.8rem; }
+        .set-d.active { background: var(--neon-c1); color: #000; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🧩 Killer Sudoku Cage Combination Tool</h1>
-        <p>Generate and manage valid cage combinations with advanced filtering</p>
+
+<div class="top-bar">
+    <div class="logo-text">👾 NEON KILLER v6.1</div>
+    <div style="display:flex; gap:10px">
+        <button class="btn-sec" onclick="undo()">↶ Undo</button>
+        <button class="btn-sec" onclick="redo()">↷ Redo</button>
     </div>
+</div>
 
-    <div class="main-container">
-        <!-- Results Column (Left) -->
-        <div class="results-column">
-            <div class="empty-state" id="emptyState">
-                <h3>🎯 Ready to Generate</h3>
-                <p>Configure your parameters on the right and click "Generate Combinations" to see results here.</p>
-            </div>
-
-            <!-- Statistics Dashboard -->
-            <div class="statistics-dashboard hidden" id="statisticsDashboard">
-                <div class="stats-header">
-                    📊 Statistics
-                </div>
-                <div class="stats-content">
-                    <div>
-                        <div style="margin-bottom: 6px; font-weight: 600; color: #8b5cf6;">Digit Frequency:</div>
-                        <div class="digit-frequency" id="digitFrequency"></div>
-                    </div>
-                    <div>
-                        <div style="margin-bottom: 6px; font-weight: 600; color: #8b5cf6;">Top Sums:</div>
-                        <div class="sum-frequency" id="sumFrequency"></div>
+<div id="layoutGrid" class="main-grid layout-single">
+    
+    <div class="panel">
+        <div class="scroll-area">
+            <div class="section">
+                <div class="h-title" style="color:var(--neon-c1)">Cage 1</div>
+                <div class="input-group border-c1">
+                    <div class="row">
+                        <div class="flex-1"><label>Sum</label><div class="row"><input type="number" id="s1min" value="10"><input type="number" id="s1max" value="10"></div></div>
+                        <div class="flex-1"><label>Size</label><div class="row"><input type="number" id="z1min" value="2"><input type="number" id="z1max" value="2"></div></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Overview Bar -->
-            <div class="overview-bar hidden" id="overviewBar">
-                <div class="overview-content">
-                    <div class="overview-row">
-                        <div class="overview-item">
-                            <span>Total Combinations:</span>
-                            <span class="count-badge total-badge" id="totalCount">0</span>
+            <div class="section">
+                <label style="display:flex; align-items:center; cursor:pointer; margin-bottom:10px">
+                    <input type="checkbox" id="dualCheck" style="display:none" onchange="toggleDual()">
+                    <div class="switch"></div>
+                    <span class="h-title" style="margin:0; color:var(--neon-c2)">Enable Cage 2</span>
+                </label>
+                <div id="dualInputs" class="hidden">
+                    <div class="input-group border-c2">
+                        <div class="row">
+                            <div class="flex-1"><label>Sum</label><div class="row"><input type="number" id="s2min" value="12"><input type="number" id="s2max" value="12"></div></div>
+                            <div class="flex-1"><label>Size</label><div class="row"><input type="number" id="z2min" value="2"><input type="number" id="z2max" value="2"></div></div>
                         </div>
                     </div>
-                    <div class="overview-row">
-                        <div class="overview-item">
-                            <span>By Size:</span>
-                            <div class="count-badges" id="sizeCountsContainer"></div>
-                        </div>
-                    </div>
-                    <div class="overview-row">
-                        <div class="overview-item">
-                            <span>By Sum:</span>
-                            <div class="count-badges" id="sumCountsContainer"></div>
+                    <div class="input-group" style="margin-top:10px">
+                        <div class="h-title">Supervisor</div>
+                        <div class="row">
+                            <div class="flex-1"><label>Max Overlap</label><input type="number" id="maxOverlap" value="0"></div>
+                            <div class="flex-1" style="padding-top:14px"><label><input type="checkbox" id="conflictMode" checked> Same House</label></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Results -->
-            <div class="results hidden" id="resultsSection">
-                <div id="resultsContainer"></div>
-            </div>
-        </div>
-
-        <!-- Controls Column (Right) -->
-        <div class="controls-column">
-            <!-- Cage Size Control -->
-            <div class="control-group">
-                <label class="control-label">🔢 Cage Size</label>
-                <div class="input-container">
-                    <div class="single-input-group" id="cageSizeSingle">
-                        <input type="number" id="cageSizeValue" min="1" max="9" value="3">
-                        <button class="button button-secondary button-small" onclick="splitCageSize()">Split to Range</button>
-                    </div>
-                    <div class="range-input-group hidden" id="cageSizeRange">
-                        <input type="number" id="cageSizeMin" min="1" max="9" value="2" placeholder="Min">
-                        <span>—</span>
-                        <input type="number" id="cageSizeMax" min="1" max="9" value="4" placeholder="Max">
-                        <button class="button button-secondary button-small" onclick="mergeCageSize()">Single Value</button>
+            <div class="section">
+                <div class="h-title">Logic Filters</div>
+                <div class="input-group">
+                    <select id="parityTarget" class="hidden" style="margin-bottom:5px"><option value="both">Apply to Both</option><option value="1">Cage 1</option><option value="2">Cage 2</option></select>
+                    <div class="row">
+                        <select id="pType" class="flex-1"><option value="none">None</option><option value="odd">Odd</option><option value="even">Even</option></select>
+                        <select id="pCond" class="flex-1"><option value="min">At Least</option><option value="exact">Exactly</option></select>
+                        <input type="number" id="pCount" value="1" style="width:40px">
                     </div>
                 </div>
+                <div id="setsList" style="margin-top:10px"></div>
+                <button class="btn-sec" style="width:100%; margin-top:10px" onclick="addSet()">+ Add Set</button>
             </div>
-
-            <!-- Sum Control -->
-            <div class="control-group">
-                <label class="control-label">➕ Target Sum</label>
-                <div class="input-container">
-                    <div class="single-input-group" id="sumSingle">
-                        <input type="number" id="sumValue" min="3" max="45" value="15">
-                        <button class="button button-secondary button-small" onclick="splitSum()">Split to Range</button>
-                    </div>
-                    <div class="range-input-group hidden" id="sumRange">
-                        <input type="number" id="sumMin" min="3" max="45" value="6" placeholder="Min">
-                        <span>—</span>
-                        <input type="number" id="sumMax" min="3" max="45" value="24" placeholder="Max">
-                        <button class="button button-secondary button-small" onclick="mergeSum()">Single Value</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Duplicate Digits Option -->
-            <div class="control-group">
-                <div class="checkbox-container">
-                    <input type="checkbox" id="allowDuplicates">
-                    <label for="allowDuplicates">🔄 Allow duplicate digits (e.g., [1,1,3])</label>
-                </div>
-                <div class="input-container" style="margin-top: 8px;">
-                    <label>Max repetitions per digit:</label>
-                    <input type="number" id="maxRepetitions" min="1" max="9" value="2" disabled>
-                </div>
-            </div>
-
-            <!-- Groups of Digits -->
-            <div class="control-group">
-                <label class="control-label">🎯 Digit Groups</label>
-                <div class="groups-container">
-                    <div id="groupsContainer"></div>
-                    <button class="button" onclick="addGroup()">+ Add Group</button>
-                </div>
-            </div>
-
-            <button class="generate-button" onclick="generateCombinations()">🚀 Generate Combinations</button>
-
-            <!-- Advanced Filtering Section -->
-            <div class="advanced-filtering hidden" id="advancedFilteringSection">
-                <label class="control-label">⚙️ Advanced Filtering</label>
-                
-                <div class="control-group">
-                    <label>Include Digits (must appear in all combinations):</label>
-                    <div class="digit-grid" id="includeDigits"></div>
-                </div>
-
-                <div class="control-group">
-                    <label>Exclude Digits (never appear):</label>
-                    <div class="digit-grid" id="excludeDigits"></div>
-                </div>
-
-                <div class="sum-exclusions">
-                    <label>Exclude Specific Sums:</label>
-                    <div class="sum-exclusion-grid" id="sumExclusions"></div>
-                </div>
-
-                <button class="button" onclick="displayResults()" style="margin-top: 12px; width: 100%;">🔄 Update Results</button>
-            </div>
+            <button class="btn btn-primary" onclick="run()">Generate</button>
         </div>
     </div>
 
-    <script>
-        let groups = [];
-        let includeDigits = new Set();
-        let excludeDigits = new Set();
-        let excludeSums = new Set();
-        let excludedCombinations = new Set();
-        let allCombinations = [];
+    <div class="panel results-panel c1-theme">
+        <div id="strip1" class="mini-strip hidden">
+            <div class="h-title" style="color:var(--neon-c1)">Cage 1: <span id="cnt1" style="color:#fff">0</span></div>
+            <div class="mini-pad" id="miniPad1"></div>
+            <div id="stats1" class="stats-box"></div>
+        </div>
+        <div id="out1" class="scroll-area"></div>
+    </div>
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            initializeDigitGrids();
-            initializeSumExclusions();
+    <div id="panelRes2" class="panel results-panel c2-theme hidden">
+        <div class="mini-strip">
+            <div class="h-title" style="color:var(--neon-c2)">Cage 2: <span id="cnt2" style="color:#fff">0</span></div>
+            <div class="mini-pad" id="miniPad2"></div>
+            <div id="stats2" class="stats-box"></div>
+        </div>
+        <div id="out2" class="scroll-area"></div>
+    </div>
+
+    <div class="panel">
+        <div class="scroll-area">
+            <div id="sidebarKeypadBox">
+                <div class="h-title" style="color:var(--neon-c1)">Global Keypad</div>
+                <div class="side-keypad c1-theme" id="globalPad"></div>
+                <div class="h-title">Top Suggestions</div>
+                <div id="globalStats" class="stats-box" style="margin-bottom:20px"></div>
+            </div>
+
+            <div class="h-title">Active Filters</div>
+            <div id="removerList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let state = { c1: {i:new Set(), e:new Set()}, c2: {i:new Set(), e:new Set()}, sets: [], excl: new Set(), hSum: new Set(), hSize: new Set() };
+    let hist = [], redoStack = [];
+    let dual = false;
+
+    window.onload = () => { genKeypads(); run(); };
+
+    // LOGIC
+    function getCombos(sMin, sMax, zMin, zMax) {
+        let res = [];
+        for(let z=zMin; z<=zMax; z++) { for(let s=sMin; s<=sMax; s++) { backtrack(1, s, z, [], res); } }
+        return res;
+    }
+    function backtrack(start, target, size, path, res) {
+        if(path.length===size) { if(target===0) res.push({d:[...path], sum:path.reduce((a,b)=>a+b,0), size:size}); return; }
+        for(let i=start; i<=9; i++) { if(i<=target) { path.push(i); backtrack(i+1, target-i, size, path, res); path.pop(); } }
+    }
+
+    function check(c, cid) {
+        const d=c.d, f=cid===1?state.c1:state.c2;
+        if(state.hSum.has(`${cid}-${c.sum}`) || state.hSize.has(`${cid}-${c.size}`)) return false;
+        for(let x of f.i) if(!d.includes(x)) return false;
+        for(let x of f.e) if(d.includes(x)) return false;
+        
+        const pTarg = document.getElementById('parityTarget').value;
+        if(!dual || pTarg==='both' || pTarg==cid) {
+            const type=document.getElementById('pType').value, cond=document.getElementById('pCond').value, req=+document.getElementById('pCount').value;
+            if(type!=='none') {
+                const has = d.filter(n=>type==='odd'?n%2!==0:n%2===0).length;
+                if((cond==='min' && has<req) || (cond==='exact' && has!==req)) return false;
+            }
+        }
+        for(let s of state.sets) {
+            if(!dual || s.target==='both' || s.target==cid) {
+                if(s.digits.size>0) {
+                    const ov = d.filter(n=>s.digits.has(n)).length;
+                    if((s.mode==='only' && d.some(n=>!s.digits.has(n))) || (s.mode==='count' && ov!==s.count)) return false;
+                }
+            }
+        }
+        if(state.excl.has(JSON.stringify(d))) return false;
+        return true;
+    }
+
+    function run() {
+        const s1min=+document.getElementById('s1min').value, s1max=+document.getElementById('s1max').value;
+        const z1min=+document.getElementById('z1min').value, z1max=+document.getElementById('z1max').value;
+        let l1 = getCombos(s1min, s1max, z1min, z1max).filter(c=>check(c, 1));
+
+        let l2 = [];
+        if(dual) {
+            const s2min=+document.getElementById('s2min').value, s2max=+document.getElementById('s2max').value;
+            const z2min=+document.getElementById('z2min').value, z2max=+document.getElementById('z2max').value;
+            l2 = getCombos(s2min, s2max, z2min, z2max).filter(c=>check(c, 2));
+            
+            const maxO=+document.getElementById('maxOverlap').value, strict=document.getElementById('conflictMode').checked;
+            const v1 = l1.filter(c1=>l2.some(c2=>isCompat(c1.d, c2.d, maxO, strict)));
+            const v2 = l2.filter(c2=>l1.some(c1=>isCompat(c1.d, c2.d, maxO, strict)));
+            l1=v1; l2=v2;
+        }
+
+        renderRes(l1, 'out1', 'cnt1', 1);
+        renderTop3(l1, 'stats1', state.c1, 'var(--neon-c1)');
+        
+        // Global Stats uses l1 in Single Mode
+        if(!dual) renderTop3(l1, 'globalStats', state.c1, 'var(--neon-c1)');
+
+        if(dual) {
+            renderRes(l2, 'out2', 'cnt2', 2);
+            renderTop3(l2, 'stats2', state.c2, 'var(--neon-c2)');
+        }
+        
+        updatePads(getGhosts(l1), getGhosts(l2));
+        renderRemovers(l1, l2);
+    }
+
+    function isCompat(d1, d2, max, strict) { const shared = d1.filter(x=>d2.includes(x)).length; return strict ? shared <= max : true; }
+    function getGhosts(list) { let f=new Set(); list.forEach(c=>c.d.forEach(n=>f.add(n))); let g=new Set(); for(let i=1;i<=9;i++)if(!f.has(i))g.add(i); return g; }
+
+    // RENDERERS
+    function renderRes(list, boxId, cntId, cid) {
+        document.getElementById(cntId).innerText = list.length;
+        const box = document.getElementById(boxId); box.innerHTML='';
+        let g={}; list.forEach(c=>{ const k=`${c.size}-${c.sum}`; if(!g[k])g[k]=[]; g[k].push(c) });
+        
+        Object.keys(g).sort().forEach(k=>{
+            const [z,s] = k.split('-');
+            const d=document.createElement('div'); d.className='res-group';
+            d.innerHTML = `<div class="res-head" style="color:${cid===1?'var(--neon-c1)':'var(--neon-c2)'}">Sum ${s} (${z})</div>`;
+            const gr=document.createElement('div'); gr.className='res-grid';
+            g[k].forEach(c=>{
+                const cd=document.createElement('div'); cd.className='card'; cd.innerText = c.d.join(' ');
+                cd.onclick = ()=>{ save(); state.excl.add(JSON.stringify(c.d)); run(); };
+                gr.appendChild(cd);
+            });
+            d.appendChild(gr); box.appendChild(d);
         });
+    }
 
-        function setupEventListeners() {
-            // Allow duplicates checkbox
-            document.getElementById('allowDuplicates').addEventListener('change', function() {
-                const maxRep = document.getElementById('maxRepetitions');
-                maxRep.disabled = !this.checked;
+    function renderTop3(list, id, filters, color) {
+        const el = document.getElementById(id); el.innerHTML='';
+        if(!list.length) return;
+        
+        // Calc Frequency
+        let counts = {};
+        list.forEach(c => c.d.forEach(n => counts[n] = (counts[n]||0)+1));
+        
+        // Filter & Sort: Top 3 that are NOT selected or excluded
+        let sorted = Object.keys(counts)
+            .map(n => parseInt(n))
+            .filter(n => !filters.i.has(n) && !filters.e.has(n)) // Exclude selected
+            .sort((a,b) => counts[b] - counts[a]);
+        
+        // Show max 3
+        sorted.slice(0, 3).forEach(n => {
+            const pct = Math.round((counts[n] / list.length) * 100);
+            const row = document.createElement('div'); row.className = 'stat-row';
+            row.innerHTML = `
+                <div class="stat-lbl">${n}</div>
+                <div class="stat-track"><div class="stat-bar" style="width:${pct}%; background:${color}"></div></div>
+                <div class="stat-val">${pct}%</div>
+            `;
+            el.appendChild(row);
+        });
+    }
+
+    function renderRemovers(l1, l2) {
+        const list = document.getElementById('removerList'); list.innerHTML='';
+        const add = (l, cid) => {
+            let sums=new Set(), sizes=new Set(); l.forEach(c=>{sums.add(c.sum); sizes.add(c.size)});
+            [...sums].sort((a,b)=>a-b).forEach(s=>{
+                if(state.hSum.has(`${cid}-${s}`)) return;
+                const r=document.createElement('div'); r.className='remover-item';
+                r.style.borderLeft=`3px solid ${cid===1?'var(--neon-c1)':'var(--neon-c2)'}`;
+                r.innerHTML=`<span>Cage ${cid}: Sum ${s}</span><span class="del-x" onclick="hide(1,${cid},${s})">✕</span>`;
+                list.appendChild(r);
             });
-        }
-
-        function splitCageSize() {
-            const singleGroup = document.getElementById('cageSizeSingle');
-            const rangeGroup = document.getElementById('cageSizeRange');
-            const value = parseInt(document.getElementById('cageSizeValue').value);
-            
-            // Set range defaults based on current value
-            document.getElementById('cageSizeMin').value = Math.max(1, value - 1);
-            document.getElementById('cageSizeMax').value = Math.min(9, value + 1);
-            
-            singleGroup.classList.add('hidden');
-            rangeGroup.classList.remove('hidden');
-        }
-
-        function mergeCageSize() {
-            const singleGroup = document.getElementById('cageSizeSingle');
-            const rangeGroup = document.getElementById('cageSizeRange');
-            const min = parseInt(document.getElementById('cageSizeMin').value);
-            const max = parseInt(document.getElementById('cageSizeMax').value);
-            
-            // Set single value to middle of range
-            document.getElementById('cageSizeValue').value = Math.floor((min + max) / 2);
-            
-            rangeGroup.classList.add('hidden');
-            singleGroup.classList.remove('hidden');
-        }
-
-        function splitSum() {
-            const singleGroup = document.getElementById('sumSingle');
-            const rangeGroup = document.getElementById('sumRange');
-            const value = parseInt(document.getElementById('sumValue').value);
-            
-            // Set range defaults based on current value
-            document.getElementById('sumMin').value = Math.max(3, value - 5);
-            document.getElementById('sumMax').value = Math.min(45, value + 5);
-            
-            singleGroup.classList.add('hidden');
-            rangeGroup.classList.remove('hidden');
-        }
-
-        function mergeSum() {
-            const singleGroup = document.getElementById('sumSingle');
-            const rangeGroup = document.getElementById('sumRange');
-            const min = parseInt(document.getElementById('sumMin').value);
-            const max = parseInt(document.getElementById('sumMax').value);
-            
-            // Set single value to middle of range
-            document.getElementById('sumValue').value = Math.floor((min + max) / 2);
-            
-            rangeGroup.classList.add('hidden');
-            singleGroup.classList.remove('hidden');
-        }
-
-        function initializeDigitGrids() {
-            const includeContainer = document.getElementById('includeDigits');
-            const excludeContainer = document.getElementById('excludeDigits');
-
-            for (let i = 1; i <= 9; i++) {
-                // Include digits
-                const includeBtn = document.createElement('button');
-                includeBtn.className = 'digit-button';
-                includeBtn.textContent = i;
-                includeBtn.id = `include-digit-${i}`;
-                includeBtn.onclick = () => toggleIncludeDigit(i);
-                includeContainer.appendChild(includeBtn);
-
-                // Exclude digits
-                const excludeBtn = document.createElement('button');
-                excludeBtn.className = 'digit-button';
-                excludeBtn.textContent = i;
-                excludeBtn.id = `exclude-digit-${i}`;
-                excludeBtn.onclick = () => toggleExcludeDigit(i);
-                excludeContainer.appendChild(excludeBtn);
-            }
-        }
-
-        function initializeSumExclusions() {
-            const container = document.getElementById('sumExclusions');
-            for (let sum = 3; sum <= 45; sum++) {
-                const btn = document.createElement('button');
-                btn.className = 'sum-button';
-                btn.textContent = sum;
-                btn.id = `sum-exclude-${sum}`;
-                btn.onclick = () => toggleSumExclusion(sum);
-                container.appendChild(btn);
-            }
-        }
-
-        // Rebuild the Exclude Specific Sums list to only show currently selected target sums
-        function updateSumExclusionsForTargetSums(targetSums) {
-            const container = document.getElementById('sumExclusions');
-            container.innerHTML = '';
-
-            // Keep only exclusions that are within the new target sums
-            const targetSet = new Set(targetSums);
-            excludeSums = new Set([...excludeSums].filter(s => targetSet.has(s)));
-
-            // Create buttons only for sums in the selected range(s)
-            targetSums.sort((a, b) => a - b).forEach(sum => {
-                const btn = document.createElement('button');
-                btn.className = 'sum-button';
-                if (excludeSums.has(sum)) btn.classList.add('excluded');
-                btn.textContent = sum;
-                btn.id = `sum-exclude-${sum}`;
-                btn.onclick = () => toggleSumExclusion(sum);
-                container.appendChild(btn);
+            [...sizes].sort((a,b)=>a-b).forEach(z=>{
+                if(state.hSize.has(`${cid}-${z}`)) return;
+                const r=document.createElement('div'); r.className='remover-item';
+                r.style.borderLeft=`3px solid ${cid===1?'var(--neon-c1)':'var(--neon-c2)'}`;
+                r.innerHTML=`<span>Cage ${cid}: Size ${z}</span><span class="del-x" onclick="hide(2,${cid},${z})">✕</span>`;
+                list.appendChild(r);
             });
-        }
+        };
+        add(l1,1); if(dual) add(l2,2);
+    }
+    function hide(type, cid, val) { save(); (type===1?state.hSum:state.hSize).add(`${cid}-${val}`); run(); }
 
-        function addGroup() {
-            const groupId = Date.now();
-            groups.push({ id: groupId, digits: new Set() });
-            renderGroups();
-        }
-
-        function removeGroup(groupId) {
-            groups = groups.filter(g => g.id !== groupId);
-            renderGroups();
-            if (allCombinations.length > 0) {
-                displayResults(); // Update results after group change
+    // UI UTILS
+    function genKeypads() {
+        const gp = document.getElementById('globalPad'); gp.innerHTML='';
+        for(let i=1; i<=9; i++) gp.appendChild(makeKey(i, 1, true));
+        const mp1 = document.getElementById('miniPad1'); mp1.innerHTML='';
+        const mp2 = document.getElementById('miniPad2'); mp2.innerHTML='';
+        for(let i=1; i<=9; i++) { mp1.appendChild(makeKey(i, 1, false)); mp2.appendChild(makeKey(i, 2, false)); }
+    }
+    function makeKey(n, cid, big) {
+        const k = document.createElement('div'); k.className = big ? 'key-btn' : 'mini-key';
+        k.innerText = n; k.id = big ? `gk-${n}` : `mk${cid}-${n}`;
+        k.onmousedown = (e) => { e.preventDefault(); save(); 
+            const f = cid===1 ? state.c1 : state.c2;
+            if(e.shiftKey || e.button===2) f.e.has(n)?f.e.delete(n):(f.e.add(n),f.i.delete(n));
+            else f.i.has(n)?f.i.delete(n):(f.i.add(n),f.e.delete(n));
+            run();
+        };
+        k.oncontextmenu=e=>e.preventDefault(); return k;
+    }
+    function updatePads(g1, g2) {
+        const up = (idPrefix, f, ghosts) => {
+            for(let i=1; i<=9; i++) {
+                const k = document.getElementById(`${idPrefix}${i}`); if(!k) continue;
+                k.className = idPrefix.includes('gk') ? 'key-btn' : 'mini-key';
+                if(f.i.has(i)) k.classList.add('in'); if(f.e.has(i)) k.classList.add('ex');
+                if(ghosts.has(i)) k.classList.add('ghost');
             }
-        }
-
-        function renderGroups() {
-            const container = document.getElementById('groupsContainer');
-            container.innerHTML = '';
-
-            groups.forEach((group, index) => {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'group';
-                groupDiv.innerHTML = `
-                    <div class="group-header">
-                        <h4>Group ${index + 1}</h4>
-                        <button class="button button-danger button-small" onclick="removeGroup(${group.id})">Remove</button>
-                    </div>
-                    <div class="digits-container">
-                        ${[1,2,3,4,5,6,7,8,9].map(digit => `
-                            <button class="digit-button ${group.digits.has(digit) ? 'selected' : ''}" 
-                                    onclick="toggleGroupDigit(${group.id}, ${digit})">${digit}</button>
-                        `).join('')}
-                    </div>
-                    <div class="checkbox-container" style="margin-top: 8px;">
-                        <input type="checkbox" id="requireFrom${group.id}" ${group.minRequired !== undefined ? 'checked' : ''}>
-                        <label for="requireFrom${group.id}">Require at least</label>
-                        <input type="number" id="minRequired${group.id}" min="1" max="9" value="${group.minRequired || 1}" 
-                               ${group.minRequired !== undefined ? '' : 'disabled'}
-                               onchange="updateGroupRequirement(${group.id}, this.value)" style="width: 50px;">
-                        <label>digits from this group</label>
-                    </div>
-                `;
-                container.appendChild(groupDiv);
-                
-                // Add event listener for the checkbox
-                const checkbox = container.querySelector(`#requireFrom${group.id}`);
-                checkbox.addEventListener('change', function() {
-                    const input = container.querySelector(`#minRequired${group.id}`);
-                    if (this.checked) {
-                        input.disabled = false;
-                        group.minRequired = parseInt(input.value);
-                    } else {
-                        input.disabled = true;
-                        delete group.minRequired;
-                    }
-                    if (allCombinations.length > 0) {
-                        displayResults(); // Update results when group requirements change
-                    }
-                });
-            });
-        }
-
-        function toggleGroupDigit(groupId, digit) {
-            const group = groups.find(g => g.id === groupId);
-            if (group.digits.has(digit)) {
-                group.digits.delete(digit);
-            } else {
-                group.digits.add(digit);
-            }
-            renderGroups();
-            if (allCombinations.length > 0) {
-                displayResults(); // Update results when group digits change
-            }
-        }
-
-        function updateGroupRequirement(groupId, value) {
-            const group = groups.find(g => g.id === groupId);
-            if (group) {
-                group.minRequired = parseInt(value);
-                if (allCombinations.length > 0) {
-                    displayResults(); // Update results when requirement value changes
-                }
-            }
-        }
-
-        function toggleIncludeDigit(digit) {
-            if (includeDigits.has(digit)) {
-                includeDigits.delete(digit);
-            } else {
-                includeDigits.add(digit);
-                excludeDigits.delete(digit); // Remove from exclude if adding to include
-            }
-            
-            // Clear any manual combination exclusions that involved this digit
-            // This allows previously grayed combinations to reappear
-            const combinationsToRestore = [];
-            for (let comboKey of excludedCombinations) {
-                const combo = JSON.parse(comboKey);
-                if (combo.includes(digit)) {
-                    combinationsToRestore.push(comboKey);
-                }
-            }
-            combinationsToRestore.forEach(key => excludedCombinations.delete(key));
-            
-            updateDigitButtons();
-            displayResults(); // Update results immediately
-        }
-
-        function toggleExcludeDigit(digit) {
-            if (excludeDigits.has(digit)) {
-                excludeDigits.delete(digit);
-            } else {
-                excludeDigits.add(digit);
-                includeDigits.delete(digit); // Remove from include if adding to exclude
-            }
-            
-            // Clear any manual combination exclusions that involved this digit
-            // This allows previously grayed combinations to reappear
-            const combinationsToRestore = [];
-            for (let comboKey of excludedCombinations) {
-                const combo = JSON.parse(comboKey);
-                if (combo.includes(digit)) {
-                    combinationsToRestore.push(comboKey);
-                }
-            }
-            combinationsToRestore.forEach(key => excludedCombinations.delete(key));
-            
-            updateDigitButtons();
-            displayResults(); // Update results immediately
-        }
-
-        function toggleSumExclusion(sum) {
-            if (excludeSums.has(sum)) {
-                excludeSums.delete(sum);
-            } else {
-                excludeSums.add(sum);
-            }
-            updateSumButtons();
-            displayResults(); // Update results immediately
-        }
-
-        function updateDigitButtons() {
-            // Update include buttons
-            const includeContainer = document.getElementById('includeDigits');
-            includeContainer.querySelectorAll('.digit-button').forEach((btn, index) => {
-                const digit = index + 1;
-                btn.classList.toggle('selected', includeDigits.has(digit));
-            });
-
-            // Update exclude buttons
-            const excludeContainer = document.getElementById('excludeDigits');
-            excludeContainer.querySelectorAll('.digit-button').forEach((btn, index) => {
-                const digit = index + 1;
-                btn.classList.toggle('selected', excludeDigits.has(digit));
-            });
-        }
-
-        function updateSumButtons() {
-            const container = document.getElementById('sumExclusions');
-            container.querySelectorAll('.sum-button').forEach(btn => {
-                const sum = parseInt(btn.textContent);
-                btn.classList.toggle('excluded', excludeSums.has(sum));
-            });
-        }
-
-        function excludeDigitFromResults(digit) {
-            excludeDigits.add(digit);
-            includeDigits.delete(digit);
-            updateDigitButtons();
-            displayResults(); // This will trigger auto-update of digit constraints
-        }
-
-        function removeSum(sum) {
-            // Add to exclusions instead of separate removedSums set
-            excludeSums.add(sum);
-            updateSumButtons();
-            displayResults();
-        }
-
-        function generateCombinations() {
-            // Reset results-based data (but keep user settings like cage size, sum, groups)
-            excludedCombinations.clear();
-            includeDigits.clear();
-            excludeDigits.clear();
-            excludeSums.clear();
-            updateDigitButtons();
-            updateSumButtons();
-
-            // Get cage size parameters
-            const cageSizeSingleVisible = !document.getElementById('cageSizeSingle').classList.contains('hidden');
-            let cageSizes = [];
-            
-            if (cageSizeSingleVisible) {
-                cageSizes = [parseInt(document.getElementById('cageSizeValue').value)];
-            } else {
-                const min = parseInt(document.getElementById('cageSizeMin').value);
-                const max = parseInt(document.getElementById('cageSizeMax').value);
-                for (let i = min; i <= max; i++) {
-                    cageSizes.push(i);
-                }
-            }
-
-            // Get sum parameters
-            const sumSingleVisible = !document.getElementById('sumSingle').classList.contains('hidden');
-            let targetSums = [];
-            
-            if (sumSingleVisible) {
-                targetSums = [parseInt(document.getElementById('sumValue').value)];
-            } else {
-                const min = parseInt(document.getElementById('sumMin').value);
-                const max = parseInt(document.getElementById('sumMax').value);
-                for (let i = min; i <= max; i++) {
-                    targetSums.push(i);
-                }
-            }
-
-            // Rebuild the sums exclusion list to only show selected target sums
-            updateSumExclusionsForTargetSums(targetSums);
-            updateSumButtons();
-
-            const allowDuplicates = document.getElementById('allowDuplicates').checked;
-            const maxRepetitions = parseInt(document.getElementById('maxRepetitions').value) || 2;
-
-            // Generate combinations
-            allCombinations = [];
-            
-            cageSizes.forEach(size => {
-                targetSums.forEach(targetSum => {
-                    const combinations = findCombinations(size, targetSum, allowDuplicates, maxRepetitions);
-                    combinations.forEach(combo => {
-                        allCombinations.push({
-                            digits: combo,
-                            sum: targetSum,
-                            size: size
-                        });
-                    });
-                });
-            });
-
-            // Auto-populate include/exclude digits based on results
-            autoUpdateDigitConstraints();
-
-            displayResults();
-            showAdvancedFilteringSection();
-        }
-
-        function findCombinations(size, targetSum, allowDuplicates, maxRepetitions = 2) {
-            let availableDigits = [];
-            
-            if (groups.length === 0) {
-                // If no groups defined, use all digits 1-9
-                availableDigits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-            } else {
-                // Collect digits from all groups
-                const digitSet = new Set();
-                groups.forEach(group => {
-                    group.digits.forEach(digit => digitSet.add(digit));
-                });
-                availableDigits = Array.from(digitSet);
-            }
-
-            // Apply exclusions
-            availableDigits = availableDigits.filter(digit => !excludeDigits.has(digit));
-
-            const combinations = new Set(); // Use Set to avoid duplicates
-            
-            function backtrackWithDuplicates(current, remaining) {
-                if (current.length === size) {
-                    if (remaining === 0) {
-                        // Check if all include digits are present
-                        const currentSet = new Set(current);
-                        let hasAllIncludes = true;
-                        for (let digit of includeDigits) {
-                            if (!currentSet.has(digit)) {
-                                hasAllIncludes = false;
-                                break;
-                            }
-                        }
-                        
-                        // Check max repetitions constraint
-                        const digitCounts = {};
-                        for (let digit of current) {
-                            digitCounts[digit] = (digitCounts[digit] || 0) + 1;
-                            if (digitCounts[digit] > maxRepetitions) {
-                                return; // Skip this combination
-                            }
-                        }
-                        
-                        // Check group requirements
-                        if (!checkGroupRequirements(current)) {
-                            return;
-                        }
-                        
-                        if (hasAllIncludes) {
-                            const sortedCombo = [...current].sort((a, b) => a - b);
-                            combinations.add(JSON.stringify(sortedCombo));
-                        }
-                    }
-                    return;
-                }
-                
-                for (let digit of availableDigits) {
-                    if (remaining >= digit) {
-                        current.push(digit);
-                        backtrackWithDuplicates(current, remaining - digit);
-                        current.pop();
-                    }
-                }
-            }
-
-            function backtrackWithoutDuplicates(current, remaining, start) {
-                if (current.length === size) {
-                    if (remaining === 0) {
-                        // Check if all include digits are present
-                        const currentSet = new Set(current);
-                        let hasAllIncludes = true;
-                        for (let digit of includeDigits) {
-                            if (!currentSet.has(digit)) {
-                                hasAllIncludes = false;
-                                break;
-                            }
-                        }
-                        
-                        // Check group requirements
-                        if (!checkGroupRequirements(current)) {
-                            return;
-                        }
-                        
-                        if (hasAllIncludes) {
-                            const sortedCombo = [...current].sort((a, b) => a - b);
-                            combinations.add(JSON.stringify(sortedCombo));
-                        }
-                    }
-                    return;
-                }
-                
-                for (let i = start; i < availableDigits.length; i++) {
-                    const digit = availableDigits[i];
-                    if (remaining >= digit) {
-                        current.push(digit);
-                        backtrackWithoutDuplicates(current, remaining - digit, i + 1);
-                        current.pop();
-                    }
-                }
-            }
-            
-            if (allowDuplicates) {
-                backtrackWithDuplicates([], targetSum);
-            } else {
-                backtrackWithoutDuplicates([], targetSum, 0);
-            }
-            
-            // Convert Set back to array of arrays
-            return Array.from(combinations).map(combo => JSON.parse(combo));
-        }
-
-        function checkGroupRequirements(combination) {
-            for (let group of groups) {
-                if (group.minRequired !== undefined) {
-                    const groupDigitsInCombo = combination.filter(digit => group.digits.has(digit)).length;
-                    if (groupDigitsInCombo < group.minRequired) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        function autoUpdateDigitConstraints() {
-            if (allCombinations.length === 0) return;
-
-            // Store previous states for comparison
-            const prevIncluded = new Set(includeDigits);
-            const prevExcluded = new Set(excludeDigits);
-
-            // Count how many combinations each digit appears in
-            const digitCounts = {};
-            for (let i = 1; i <= 9; i++) {
-                digitCounts[i] = 0;
-            }
-
-            allCombinations.forEach(combo => {
-                const uniqueDigits = [...new Set(combo.digits)];
-                uniqueDigits.forEach(digit => {
-                    digitCounts[digit]++;
-                });
-            });
-
-            // Auto-include digits that appear in ALL combinations
-            for (let digit = 1; digit <= 9; digit++) {
-                if (digitCounts[digit] === allCombinations.length && digitCounts[digit] > 0) {
-                    includeDigits.add(digit);
-                } else {
-                    includeDigits.delete(digit);
-                }
-            }
-
-            // Auto-exclude digits that appear in NO combinations
-            for (let digit = 1; digit <= 9; digit++) {
-                if (digitCounts[digit] === 0) {
-                    excludeDigits.add(digit);
-                } else {
-                    excludeDigits.delete(digit);
-                }
-            }
-
-            // Visual feedback for changed digits
-            for (let digit = 1; digit <= 9; digit++) {
-                const wasIncluded = prevIncluded.has(digit);
-                const nowIncluded = includeDigits.has(digit);
-                const wasExcluded = prevExcluded.has(digit);
-                const nowExcluded = excludeDigits.has(digit);
-
-                if (wasIncluded !== nowIncluded) {
-                    const btn = document.getElementById(`include-digit-${digit}`);
-                    if (btn) {
-                        btn.classList.add('auto-updated');
-                        setTimeout(() => btn.classList.remove('auto-updated'), 2500);
-                    }
-                }
-
-                if (wasExcluded !== nowExcluded) {
-                    const btn = document.getElementById(`exclude-digit-${digit}`);
-                    if (btn) {
-                        btn.classList.add('auto-updated');
-                        setTimeout(() => btn.classList.remove('auto-updated'), 2500);
-                    }
-                }
-            }
-
-            updateDigitButtons();
-        }
-
-        function updateStatistics() {
-            if (allCombinations.length === 0) return;
-
-            // Filter combinations based on current constraints
-            const filteredCombinations = allCombinations.filter(combo => {
-                if (excludeSums.has(combo.sum)) return false;
-                if (includeDigits.size > 0) {
-                    const comboDigitSet = new Set(combo.digits);
-                    for (let requiredDigit of includeDigits) {
-                        if (!comboDigitSet.has(requiredDigit)) {
-                            return false;
-                        }
-                    }
-                }
-                if (combo.digits.some(digit => excludeDigits.has(digit))) {
-                    return false;
-                }
-                if (!checkGroupRequirements(combo.digits)) {
-                    return false;
-                }
-                const comboKey = JSON.stringify(combo.digits);
-                if (excludedCombinations.has(comboKey)) return false;
-                return true;
-            });
-
-            // Calculate digit frequencies
-            const digitFreq = {};
-            for (let i = 1; i <= 9; i++) {
-                digitFreq[i] = 0;
-            }
-
-            filteredCombinations.forEach(combo => {
-                combo.digits.forEach(digit => {
-                    digitFreq[digit]++;
-                });
-            });
-
-            // Find most and least common digits
-            const freqValues = Object.values(digitFreq).filter(f => f > 0);
-            const maxFreq = Math.max(...freqValues);
-            const minFreq = Math.min(...freqValues);
-
-            // Update digit frequency display
-            const digitFreqContainer = document.getElementById('digitFrequency');
-            digitFreqContainer.innerHTML = '';
-            for (let i = 1; i <= 9; i++) {
-                const freqBar = document.createElement('div');
-                freqBar.className = 'freq-bar';
-                
-                if (digitFreq[i] === maxFreq && digitFreq[i] > 0) {
-                    freqBar.classList.add('most-common');
-                } else if (digitFreq[i] === minFreq && freqValues.length > 1) {
-                    freqBar.classList.add('least-common');
-                }
-                
-                freqBar.innerHTML = `
-                    <span class="freq-number">${i}</span>
-                    <span class="freq-count">${digitFreq[i]}</span>
-                `;
-                digitFreqContainer.appendChild(freqBar);
-            }
-
-            // Calculate sum frequencies
-            const sumFreq = {};
-            filteredCombinations.forEach(combo => {
-                sumFreq[combo.sum] = (sumFreq[combo.sum] || 0) + 1;
-            });
-
-            // Sort sums by frequency and show top 8
-            const topSums = Object.entries(sumFreq)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 8);
-
-            // Update sum frequency display
-            const sumFreqContainer = document.getElementById('sumFrequency');
-            sumFreqContainer.innerHTML = '';
-            topSums.forEach(([sum, count], index) => {
-                const sumItem = document.createElement('div');
-                sumItem.className = 'sum-freq-item';
-                if (index === 0) {
-                    sumItem.classList.add('top-sum');
-                }
-                sumItem.innerHTML = `<span>Sum ${sum}</span><span>${count}</span>`;
-                sumFreqContainer.appendChild(sumItem);
-            });
-        }
-
-        function displayResults() {
-            const container = document.getElementById('resultsContainer');
-            container.innerHTML = '';
-
-            if (allCombinations.length === 0) {
-                container.innerHTML = '<div class="empty-state"><h3>No combinations found</h3><p>Try adjusting your parameters or removing some exclusions.</p></div>';
-                updateOverview(0, {}, {});
-                showResults();
-                return;
-            }
-
-            // Filter combinations based on current constraints
-            const filteredCombinations = allCombinations.filter(combo => {
-                // Skip if sum is excluded
-                if (excludeSums.has(combo.sum)) return false;
-                
-                // Check if combination contains ALL required include digits
-                if (includeDigits.size > 0) {
-                    const comboDigitSet = new Set(combo.digits);
-                    for (let requiredDigit of includeDigits) {
-                        if (!comboDigitSet.has(requiredDigit)) {
-                            return false;
-                        }
-                    }
-                }
-                
-                // Check if combination contains any excluded digits
-                if (combo.digits.some(digit => excludeDigits.has(digit))) {
-                    return false;
-                }
-                
-                // Check group requirements
-                if (!checkGroupRequirements(combo.digits)) {
-                    return false;
-                }
-
-                return true;
-            });
-
-            // Auto-update digit constraints based on filtered results
-            autoUpdateDigitConstraintsFromFiltered(filteredCombinations);
-
-            // Update statistics
-            updateStatistics();
-
-            // Group combinations by cage size and sum
-            const groupedResults = {};
-            let totalCombinations = 0;
-            const sizeCounts = {};
-            const sumCounts = {};
-
-            filteredCombinations.forEach(combo => {
-                const comboKey = JSON.stringify(combo.digits);
-                
-                // Check if manually excluded by user clicking
-                let isExcluded = excludedCombinations.has(comboKey);
-                
-                if (!groupedResults[combo.size]) {
-                    groupedResults[combo.size] = {};
-                }
-                if (!groupedResults[combo.size][combo.sum]) {
-                    groupedResults[combo.size][combo.sum] = [];
-                }
-                groupedResults[combo.size][combo.sum].push({...combo, excluded: isExcluded});
-                
-                if (!isExcluded) {
-                    totalCombinations++;
-                    sizeCounts[combo.size] = (sizeCounts[combo.size] || 0) + 1;
-                    sumCounts[combo.sum] = (sumCounts[combo.sum] || 0) + 1;
-                }
-            });
-
-            // Display results
-            Object.keys(groupedResults).sort((a, b) => parseInt(a) - parseInt(b)).forEach(size => {
-                const sizeSection = document.createElement('div');
-                sizeSection.className = 'cage-size-section';
-                sizeSection.id = `size-${size}`;
-                
-                const validCombos = Object.values(groupedResults[size]).flat().filter(c => !c.excluded).length;
-                sizeSection.innerHTML = `<h3 class="cage-size-header">Cage Size: ${size} cells (${validCombos} valid)</h3>`;
-                
-                Object.keys(groupedResults[size]).sort((a, b) => parseInt(a) - parseInt(b)).forEach(sum => {
-                    const validSumCombos = groupedResults[size][sum].filter(c => !c.excluded).length;
-                    
-                    // Skip sums that have no valid combinations (automatically remove empty sums)
-                    if (validSumCombos === 0) return;
-                    
-                    const sumSection = document.createElement('div');
-                    sumSection.className = 'sum-section';
-                    sumSection.id = `sum-${sum}`;
-                    
-                    const totalSumCombos = groupedResults[size][sum].length;
-                    sumSection.innerHTML = `
-                        <h4 class="sum-header">
-                            <span>Sum: ${sum} (${validSumCombos}/${totalSumCombos} combinations)</span>
-                            <button class="sum-remove-btn" onclick="removeSum(${sum})" title="Remove this sum">×</button>
-                        </h4>
-                    `;
-                    
-                    const combinationsDiv = document.createElement('div');
-                    combinationsDiv.className = 'combinations';
-                    
-                    groupedResults[size][sum].forEach(combo => {
-                        const comboDiv = document.createElement('div');
-                        comboDiv.className = 'combination';
-                        const comboKey = JSON.stringify(combo.digits);
-                        
-                        if (combo.excluded) {
-                            comboDiv.classList.add('grayed-out');
-                        }
-                        
-                        comboDiv.onclick = (e) => {
-                            e.stopPropagation();
-                            toggleCombination(combo.digits);
-                        };
-                        
-                        const digitsHtml = combo.digits.map(digit => 
-                            `<span class="clickable-digit" onclick="event.stopPropagation(); excludeDigitFromResults(${digit})">${digit}</span>`
-                        ).join(', ');
-                        
-                        comboDiv.innerHTML = `
-                            <div class="combination-digits">[${digitsHtml}]</div>
-                            ${combo.excluded ? '<div class="restore-hint">Click to restore</div>' : ''}
-                        `;
-                        combinationsDiv.appendChild(comboDiv);
-                    });
-                    
-                    sumSection.appendChild(combinationsDiv);
-                    sizeSection.appendChild(sumSection);
-                });
-                
-                container.appendChild(sizeSection);
-            });
-
-            updateOverview(totalCombinations, sizeCounts, sumCounts);
-            showResults();
-        }
-
-        function autoUpdateDigitConstraintsFromFiltered(filteredCombinations) {
-            if (allCombinations.length === 0) return;
-
-            // Store previous states for comparison
-            const prevIncluded = new Set(includeDigits);
-            const prevExcluded = new Set(excludeDigits);
-
-            // Count how many combinations each digit appears in AFTER considering manual exclusions
-            const digitCounts = {};
-            for (let i = 1; i <= 9; i++) {
-                digitCounts[i] = 0;
-            }
-
-            // Count from all combinations, but exclude manually excluded combinations
-            allCombinations.forEach(combo => {
-                const comboKey = JSON.stringify(combo.digits);
-                
-                // Skip manually excluded combinations
-                if (excludedCombinations.has(comboKey)) return;
-                
-                // Skip combinations excluded by current filters
-                if (excludeSums.has(combo.sum)) return;
-                if (combo.digits.some(d => excludeDigits.has(d))) return;
-                if (includeDigits.size > 0 && !Array.from(includeDigits).every(d => combo.digits.includes(d))) return;
-                if (!checkGroupRequirements(combo.digits)) return;
-                
-                const uniqueDigits = [...new Set(combo.digits)];
-                uniqueDigits.forEach(digit => {
-                    digitCounts[digit]++;
-                });
-            });
-
-            // Count total valid combinations
-            const totalValidCombinations = allCombinations.filter(combo => {
-                const comboKey = JSON.stringify(combo.digits);
-                return !excludedCombinations.has(comboKey) && 
-                       !excludeSums.has(combo.sum) && 
-                       !combo.digits.some(d => excludeDigits.has(d)) &&
-                       (includeDigits.size === 0 || Array.from(includeDigits).every(d => combo.digits.includes(d))) &&
-                       checkGroupRequirements(combo.digits);
-            }).length;
-
-            // Auto-include digits that appear in ALL valid combinations (but don't override manual choices)
-            for (let digit = 1; digit <= 9; digit++) {
-                if (digitCounts[digit] === totalValidCombinations && totalValidCombinations > 0) {
-                    if (!prevExcluded.has(digit)) { // Don't auto-include if user manually excluded
-                        includeDigits.add(digit);
-                    }
-                } else if (digitCounts[digit] < totalValidCombinations) {
-                    // Only remove from include if it wasn't manually added
-                    if (digitCounts[digit] === 0 || !prevIncluded.has(digit)) {
-                        includeDigits.delete(digit);
-                    }
-                }
-            }
-
-            // Auto-exclude digits that appear in NO valid combinations (but don't override manual choices)
-            for (let digit = 1; digit <= 9; digit++) {
-                if (digitCounts[digit] === 0) {
-                    if (!prevIncluded.has(digit)) { // Don't auto-exclude if user manually included
-                        excludeDigits.add(digit);
-                    }
-                } else if (digitCounts[digit] > 0) {
-                    // Only remove from exclude if it wasn't manually added
-                    if (!prevExcluded.has(digit)) {
-                        excludeDigits.delete(digit);
-                    }
-                }
-            }
-
-            // Visual feedback for changed digits
-            for (let digit = 1; digit <= 9; digit++) {
-                const wasIncluded = prevIncluded.has(digit);
-                const nowIncluded = includeDigits.has(digit);
-                const wasExcluded = prevExcluded.has(digit);
-                const nowExcluded = excludeDigits.has(digit);
-
-                if (wasIncluded !== nowIncluded) {
-                    const btn = document.getElementById(`include-digit-${digit}`);
-                    if (btn) {
-                        btn.classList.add('auto-updated');
-                        setTimeout(() => btn.classList.remove('auto-updated'), 2500);
-                    }
-                }
-
-                if (wasExcluded !== nowExcluded) {
-                    const btn = document.getElementById(`exclude-digit-${digit}`);
-                    if (btn) {
-                        btn.classList.add('auto-updated');
-                        setTimeout(() => btn.classList.remove('auto-updated'), 2500);
-                    }
-                }
-            }
-
-            updateDigitButtons();
-        }
-
-        function toggleCombination(digits) {
-            const key = JSON.stringify(digits);
-            if (excludedCombinations.has(key)) {
-                excludedCombinations.delete(key);
-            } else {
-                excludedCombinations.add(key);
-            }
-            displayResults();
-        }
-
-        function updateOverview(total, sizeCounts, sumCounts) {
-            document.getElementById('totalCount').textContent = total;
-            
-            // Size counts - sorted in ascending order
-            const sizeContainer = document.getElementById('sizeCountsContainer');
-            sizeContainer.innerHTML = '';
-            Object.keys(sizeCounts).sort((a, b) => parseInt(a) - parseInt(b)).forEach(size => {
-                const badge = document.createElement('span');
-                badge.className = 'count-badge';
-                badge.textContent = `${size} (${sizeCounts[size]})`;
-                badge.onclick = () => scrollToElement(`size-${size}`);
-                sizeContainer.appendChild(badge);
-            });
-
-            // Sum counts - sorted in ascending order (show top 15 by count, but in ascending sum order)
-            const sumContainer = document.getElementById('sumCountsContainer');
-            sumContainer.innerHTML = '';
-            const topSums = Object.entries(sumCounts)
-                .sort((a, b) => b[1] - a[1]) // Sort by count descending first
-                .slice(0, 15) // Take top 15
-                .sort((a, b) => parseInt(a[0]) - parseInt(b[0])); // Then sort by sum ascending
-                
-            topSums.forEach(([sum, count]) => {
-                const badge = document.createElement('span');
-                badge.className = 'count-badge';
-                badge.textContent = `${sum} (${count})`;
-                badge.onclick = () => scrollToElement(`sum-${sum}`);
-                sumContainer.appendChild(badge);
-            });
-        }
-
-        function scrollToElement(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        function showAdvancedFilteringSection() {
-            document.getElementById('advancedFilteringSection').classList.remove('hidden');
-        }
-
-        function showResults() {
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('statisticsDashboard').classList.remove('hidden');
-            document.getElementById('overviewBar').classList.remove('hidden');
-            document.getElementById('resultsSection').classList.remove('hidden');
-        }
-    </script>
+        };
+        up('gk-', state.c1, g1); up('mk1-', state.c1, g1); up('mk2-', state.c2, g2);
+    }
+
+    function addSet() { save(); state.sets.push({id:Date.now(), digits:new Set(), target:'both', mode:'only', count:1}); drawSets(); }
+    function drawSets() {
+        const d = document.getElementById('setsList'); d.innerHTML='';
+        state.sets.forEach(s => {
+            const targetUI = dual ? `<select onchange="updSet(${s.id},'target',this.value)" style="width:auto; margin:0; font-size:0.75rem"><option value="both" ${s.target=='both'?'selected':''}>Both</option><option value="1" ${s.target=='1'?'selected':''}>Cage 1</option><option value="2" ${s.target=='2'?'selected':''}>Cage 2</option></select>` : '';
+            const countUI = s.mode==='count' ? `<input type="number" value="${s.count}" onchange="updSet(${s.id},'count',+this.value)" style="width:40px">` : '';
+            const el = document.createElement('div'); el.className='input-group';
+            el.innerHTML = `
+                <div style="display:flex; justify-content:space-between; gap:5px; margin-bottom:5px">
+                    ${targetUI}
+                    <select onchange="updSet(${s.id},'mode',this.value)" style="width:auto; font-size:0.75rem"><option value="only" ${s.mode=='only'?'selected':''}>Allow Only</option><option value="count" ${s.mode=='count'?'selected':''}>Req Count</option></select>
+                    ${countUI}
+                    <button class="btn-sec" style="width:auto; padding:2px 8px; color:var(--danger)" onclick="delSet(${s.id})">✕</button>
+                </div>
+                <div class="set-row">${[1,2,3,4,5,6,7,8,9].map(n=>`<div class="set-d ${s.digits.has(n)?'active':''}" onclick="togSet(${s.id},${n})">${n}</div>`).join('')}</div>
+            `;
+            d.appendChild(el);
+        });
+    }
+    function togSet(id,n){ let s=state.sets.find(x=>x.id===id); s.digits.has(n)?s.digits.delete(n):s.digits.add(n); drawSets(); run(); }
+    function updSet(id,k,v){ save(); state.sets.find(x=>x.id===id)[k]=v; if(k==='mode')drawSets(); run(); }
+    function delSet(id){ save(); state.sets=state.sets.filter(x=>x.id!==id); drawSets(); run(); }
+
+    function toggleDual() {
+        dual = document.getElementById('dualCheck').checked;
+        document.getElementById('layoutGrid').className = dual ? 'main-grid layout-dual' : 'main-grid layout-single';
+        document.getElementById('dualInputs').classList.toggle('hidden', !dual);
+        document.getElementById('panelRes2').classList.toggle('hidden', !dual);
+        document.getElementById('parityTarget').classList.toggle('hidden', !dual);
+        document.getElementById('sidebarKeypadBox').classList.toggle('hidden', dual);
+        document.getElementById('strip1').classList.toggle('hidden', !dual);
+        drawSets(); run();
+    }
+
+    function save() { hist.push(JSON.stringify({c1:{i:[...state.c1.i],e:[...state.c1.e]}, c2:{i:[...state.c2.i],e:[...state.c2.e]}, excl:[...state.excl], hSum:[...state.hSum], hSize:[...state.hSize], sets:state.sets.map(s=>({...s,digits:[...s.digits]}))})); if(hist.length>20)hist.shift(); redoStack=[]; }
+    function undo() { if(hist.length){ redoStack.push(snap()); load(hist.pop()); } }
+    function redo() { if(redoStack.length){ hist.push(snap()); load(redoStack.pop()); } }
+    function snap() { return JSON.stringify({c1:{i:[...state.c1.i],e:[...state.c1.e]}, c2:{i:[...state.c2.i],e:[...state.c2.e]}, excl:[...state.excl], hSum:[...state.hSum], hSize:[...state.hSize], sets:state.sets.map(s=>({...s,digits:[...s.digits]}))}); }
+    function load(s) { const o=JSON.parse(s); state.c1={i:new Set(o.c1.i),e:new Set(o.c1.e)}; state.c2={i:new Set(o.c2.i),e:new Set(o.c2.e)}; state.excl=new Set(o.excl); state.hSum=new Set(o.hSum); state.hSize=new Set(o.hSize); state.sets=o.sets.map(s=>({...s,digits:new Set(s.digits)})); drawSets(); run(); }
+</script>
 </body>
 </html>
